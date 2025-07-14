@@ -1,6 +1,9 @@
 package com.example.thirtydays
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.thirtydays.model.Day
+import kotlin.math.exp
 
 @Composable
 fun ThirtyDaysList(
@@ -40,7 +48,20 @@ fun ThirtyDaysList(
 
 @Composable
 fun DaysCard(day: Day, modifier: Modifier = Modifier) {
-    Card(elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), modifier = modifier) {
+    var expanded by remember { mutableStateOf(false) }
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = modifier
+            .animateContentSize()
+            .height(if (expanded) 400.dp else 200.dp)
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                expanded = !expanded
+            }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +76,12 @@ fun DaysCard(day: Day, modifier: Modifier = Modifier) {
                 text = stringResource(day.titleRes),
                 style = MaterialTheme.typography.displayMedium
             )
-            Box(modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(8.dp))) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
                 Image(
                     painter = painterResource(day.imageRes),
                     contentDescription = null,
