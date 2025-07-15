@@ -50,20 +50,21 @@ fun ThirtyDaysList(
 
 @Composable
 fun DaysCard(day: Day, modifier: Modifier = Modifier) {
+    val collapsedHeight =
+        310.dp // Adjust this value based on your actual text sizes and desired spacing
+    val expandedHeight = 400.dp
     var expanded by remember { mutableStateOf(false) }
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    Card(elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .animateContentSize()
-            .height(if (expanded) 400.dp else 250.dp)
+            .height(if (expanded) expandedHeight else collapsedHeight)
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = true, color = Color.Blue, radius = 5.dp)
+                indication = rememberRipple(bounded = true, color = Color.Green)
             ) {
                 expanded = !expanded
-            }
-    ) {
+            }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -71,12 +72,10 @@ fun DaysCard(day: Day, modifier: Modifier = Modifier) {
                 .sizeIn(minHeight = 72.dp)
         ) {
             Text(
-                text = stringResource(day.dayRes),
-                style = MaterialTheme.typography.labelMedium
+                text = stringResource(day.dayRes), style = MaterialTheme.typography.labelMedium
             )
             Text(
-                text = stringResource(day.titleRes),
-                style = MaterialTheme.typography.displayMedium
+                text = stringResource(day.titleRes), style = MaterialTheme.typography.displayMedium
             )
             Box(
                 modifier = Modifier
@@ -91,7 +90,7 @@ fun DaysCard(day: Day, modifier: Modifier = Modifier) {
                     contentScale = ContentScale.Crop
                 )
             }
-            if(expanded){
+            if (expanded) {
                 DayDescription(day.contentRes)
             }
         }
@@ -99,7 +98,7 @@ fun DaysCard(day: Day, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DayDescription (@StringRes dayDescription: Int, modifier: Modifier = Modifier){
+fun DayDescription(@StringRes dayDescription: Int, modifier: Modifier = Modifier) {
     Text(
         text = stringResource(dayDescription),
         style = MaterialTheme.typography.bodyLarge,
